@@ -1,38 +1,36 @@
+import { useState } from 'react';
 import './App.css'
-import { useState,useEffect } from 'react';
-import EmployeeCard from './Components/EmployeeCard'
+import EmployeeCard from './components/EmployeeCard';
+
+const sampleEmployee = {
+  name: {
+    first: "Charlie",
+    last: "Thompson",
+  },
+  email: "charlie.thompson@example.com",
+  picture: {
+    medium: "https://randomuser.me/api/portraits/med/men/40.jpg",
+  },
+};
 
 function App() {
-  const [employee, setEmployee] = useState({
-    name: {
-      first: "",
-      last: "",
-    },
-    email: "",
-    picture: {
-      medium: "",
-    },
-  });
+const [employee, setEmployee] = useState(sampleEmployee);
 
-  const getEmployee = () => {
-    fetch("https://randomuser.me/api?nat=en")
-      .then((response) => response.json())
-      .then((data) => {
-        // Utilisation de la destructuration
-        const [randomUser] = data.results;
-        setEmployee(randomUser);
-      });
-  };
+const getEmployee = () => {
+  // Send the request
+  fetch("http://localhost:3310/api/employees")
+    .then((response) => response.json())
+    .then((data) => {
+      setEmployee(data.results[0]);
+    });
+};
 
-  useEffect(() => {
-    getEmployee();
-  }, []);
   return (
     <div className='App'>
       <EmployeeCard employee={employee} />
       <button type="button" onClick={getEmployee}>Get employee</button>
     </div>
-  );
+  )
 }
 
 export default App
